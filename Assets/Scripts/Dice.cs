@@ -5,6 +5,7 @@ public class Dice : MonoBehaviour
 {
     private Sprite[] diceSides;
     private SpriteRenderer rend;
+    public static bool isDiceRolling = false;
 
     // Use this for initialization
     private void Start()
@@ -15,7 +16,11 @@ public class Dice : MonoBehaviour
 
     private void OnMouseDown()
     {
-        StartCoroutine("RollTheDice");
+        if (!isDiceRolling)
+        {
+            StartCoroutine("RollTheDice");
+            isDiceRolling = true;
+        }
     }
 
     // Coroutine that rolls the dice

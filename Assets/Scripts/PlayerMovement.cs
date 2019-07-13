@@ -78,6 +78,7 @@ public class PlayerMovement : MonoBehaviour
             }
         }
 
+        Dice.isDiceRolling = false;
     }
 
 
