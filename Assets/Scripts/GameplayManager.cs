@@ -17,8 +17,11 @@ public class GameplayManager : MonoBehaviour
     public void StartExecution()
     {
             StartCoroutine(PlayerMovement.s_Instance.StartExecution(1.25f));
+    }
 
-
+    public void StartExecution(int diceValue)
+    {
+        StartCoroutine(PlayerMovement.s_Instance.StartExecution(diceValue));
     }
 
     public void ResetGame()
