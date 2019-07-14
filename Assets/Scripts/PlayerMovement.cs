@@ -5,18 +5,13 @@ using UnityEngine.UI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public static PlayerMovement s_Instance;
+    //public static PlayerMovement s_Instance;
     public GameObject finalPanel;
     public MotionType collisionMotionType = MotionType.right;
-    public PathGenerator pathGeneratorScript = null;
+    private PathGenerator pathGeneratorScript = null;
+    public bool canSkipThisTurn = true;
 
-    private void Awake()
-    {
-        if(s_Instance == null)
-        {
-            s_Instance = this;
-        }
-    }
+    private int previousDiceValue = 0;
 
     private void Start()
     {
@@ -40,51 +35,61 @@ public class PlayerMovement : MonoBehaviour
     public IEnumerator StartExecution(int diceValue)
     {
 
-        //move player position as dice count and keep track of the board.
-        for (int i = 0; i < diceValue; i++)
+        if (canSkipThisTurn)
         {
-            Vector3 playerPosition = transform.position;
-            RaycastHit hit;
-            if(Physics.Raycast(playerPosition,Vector3.down, out hit))
-            {
-                cubeItemProperties cip = hit.transform.GetComponent<cubeItemProperties>();
-                if (!cip.isFinal)
-                {
-                    yield return StartCoroutine(DoMotionOfPlayer(cip.cubeCurrentMotion));
-                }
-            }
-        }
-        RaycastHit hit2;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit2))
-        {
-            cubeItemProperties cip = hit2.transform.GetComponent<cubeItemProperties>();
-            if (cip.isAssending)
-            {
-                for (int i = 0; i < cip.factor; i++)
-                {
-                    yield return StartCoroutine(DoMotionOfPlayer(MotionType.fwd));
-                }
-            }
-            else if (cip.isDesending)
-            {
-                for (int i = 0; i < cip.factor; i++)
-                {
-                    yield return StartCoroutine(DoMotionOfPlayer(MotionType.back));
-                }
-            }
-            else if (cip.isFinal)
-            {
-                Debug.Log("You fucking won");
-            }
+            // ask players to play or skip this turn.
+
+            previousDiceValue = diceValue;
+            canSkipThisTurn = false;
         }
 
+        else
+        {
+            //move player position as dice count and keep track of the board.
+            for (int i = 0; i < diceValue; i++)
+            {
+                Vector3 playerPosition = transform.position;
+                RaycastHit hit;
+                if (Physics.Raycast(playerPosition, Vector3.down, out hit))
+                {
+                    cubeItemProperties cip = hit.transform.GetComponent<cubeItemProperties>();
+                    if (!cip.isFinal)
+                    {
+                        yield return StartCoroutine(DoMotionOfPlayer(cip.cubeCurrentMotion));
+                    }
+                }
+            }
+            RaycastHit hit2;
+            if (Physics.Raycast(transform.position, Vector3.down, out hit2))
+            {
+                cubeItemProperties cip = hit2.transform.GetComponent<cubeItemProperties>();
+                if (cip.isAssending)
+                {
+                    for (int i = 0; i < cip.factor; i++)
+                    {
+                        yield return StartCoroutine(DoMotionOfPlayer(MotionType.fwd));
+                    }
+                }
+                else if (cip.isDesending)
+                {
+                    for (int i = 0; i < cip.factor; i++)
+                    {
+                        yield return StartCoroutine(DoMotionOfPlayer(MotionType.back));
+                    }
+                }
+                else if (cip.isFinal)
+                {
+                    Debug.Log("You fucking won");
+                }
+            }
+        }
         Dice.isDiceRolling = false;
     }
 
 
     IEnumerator DoMotionOfPlayer(MotionType motionType)
     {
-        yield return new WaitForSeconds(1.25f);
+        yield return new WaitForSeconds(0.5f);
         switch (motionType)
         {
             case MotionType.left:

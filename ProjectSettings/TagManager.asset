@@ -3,7 +3,15 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - LeftArrow
+  - RightArrow
+  - NonWalkable
+  - FwdArrow
+  - PlayerRed
+  - PlayerBlue
+  - PlayerGreen
+  - PlayerYellow
   layers:
   - Default
   - TransparentFX
