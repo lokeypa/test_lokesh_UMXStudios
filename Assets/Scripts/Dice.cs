@@ -39,6 +39,6 @@ public class Dice : MonoBehaviour
         finalSide = randomDiceSide + 1;
         
         Debug.Log(finalSide);
-        GameplayManager.s_Instance.StartExecution(finalSide);
+        GameplayManager.s_Instance.SkipCheckBeforeExecute(finalSide);
     }
 }

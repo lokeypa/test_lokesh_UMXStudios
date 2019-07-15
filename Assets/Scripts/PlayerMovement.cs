@@ -9,9 +9,10 @@ public class PlayerMovement : MonoBehaviour
     public GameObject finalPanel;
     public MotionType collisionMotionType = MotionType.right;
     private PathGenerator pathGeneratorScript = null;
-    public bool canSkipThisTurn = true;
+    public bool hasSkippedPreviousTurn = false;
+    public bool hasAlreadySkipped = false;
 
-    private int previousDiceValue = 0;
+    public int previousRecordedValue = 0;
 
     private void Start()
     {
@@ -35,15 +36,6 @@ public class PlayerMovement : MonoBehaviour
     public IEnumerator StartExecution(int diceValue)
     {
 
-        if (canSkipThisTurn)
-        {
-            // ask players to play or skip this turn.
-
-            previousDiceValue = diceValue;
-            canSkipThisTurn = false;
-        }
-
-        else
         {
             //move player position as dice count and keep track of the board.
             for (int i = 0; i < diceValue; i++)
@@ -79,7 +71,10 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (cip.isFinal)
                 {
-                    Debug.Log("You fucking won");
+                    //this player has won the game
+                    finalPanel.SetActive(true);
+                    Text tmptext = finalPanel.transform.GetChild(0).GetComponent<Text>();
+                    tmptext.text = gameObject.name + " has Won The match!!!"; 
                 }
             }
         }
