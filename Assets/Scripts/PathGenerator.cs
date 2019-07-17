@@ -6,6 +6,7 @@ public class PathGenerator : MonoBehaviour
 {
     private GameObject groundUnit;
     public Material mat_cubeBoarder , mat_cubeBoarderBlueEntry, mat_cubeBoarderRedEntry, mat_cubeBoarderBlueExit, mat_cubeBoarderRedExit;
+    public List<List<GameObject>> lst2D_GroundUnits = new List<List<GameObject>>();
 
     // Start is called before the first frame update
     void Start()
@@ -16,7 +17,6 @@ public class PathGenerator : MonoBehaviour
     }
 
 
-    public List<List<GameObject>> lst2D_GroundUnits = new List<List<GameObject>>();
     private void GenerateGridOfSize(int n)
     {
         groundUnit = GameObject.CreatePrimitive(PrimitiveType.Cube);
@@ -30,6 +30,7 @@ public class PathGenerator : MonoBehaviour
                 lst_GroundUnits.Add(Instantiate(groundUnit,transform));
                 lst_GroundUnits[j].GetComponent<MeshRenderer>().material = mat_cubeBoarder;
                 lst_GroundUnits[j].tag = "NonWalkable";
+                DestroyImmediate(lst_GroundUnits[j].GetComponent<BoxCollider>());
                 cubeItemProperties cip = lst_GroundUnits[j].AddComponent<cubeItemProperties>();
 
                 if(i==0 && j == 0)
@@ -86,7 +87,7 @@ public class PathGenerator : MonoBehaviour
         if (randomRow == exitRandomRow) randomColumn += 1;
         int exitRandomColumn = Random.Range(randomColumn, 8);
         lst2D_GroundUnits[exitRandomRow][exitRandomColumn].GetComponent<MeshRenderer>().material = mat_cubeBoarderBlueExit;
-        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomRow, exitRandomColumn);
+        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomColumn, exitRandomRow);
         entryCube.GetComponent<cubeItemProperties>().isShortcut = true;
 
         //second shortcut.
@@ -102,7 +103,8 @@ public class PathGenerator : MonoBehaviour
         if (randomRow == exitRandomRow) randomColumn += 1;
         exitRandomColumn = Random.Range(randomColumn, 8);
         lst2D_GroundUnits[exitRandomRow][exitRandomColumn].GetComponent<MeshRenderer>().material = mat_cubeBoarderBlueExit;
-        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomRow, exitRandomColumn);
+        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomColumn , exitRandomRow);
+        entryCube.GetComponent<cubeItemProperties>().isShortcut = true;
     }
 
     public void GeneratePitFalls()
@@ -124,7 +126,7 @@ public class PathGenerator : MonoBehaviour
             exitRandomColumn += 1;
         }
         lst2D_GroundUnits[exitRandomRow][exitRandomColumn].GetComponent<MeshRenderer>().material = mat_cubeBoarderRedExit;
-        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomRow, exitRandomColumn);
+        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomColumn, exitRandomRow);
         entryCube.GetComponent<cubeItemProperties>().isPitfall = true;
 
 
@@ -148,14 +150,8 @@ public class PathGenerator : MonoBehaviour
             exitRandomColumn++;
         }
         lst2D_GroundUnits[exitRandomRow][exitRandomColumn].GetComponent<MeshRenderer>().material = mat_cubeBoarderRedExit;
-        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomRow, exitRandomColumn);
+        entryCube.GetComponent<cubeItemProperties>().exitPoint = new Vector2Int(exitRandomColumn, exitRandomRow);
         entryCube.GetComponent<cubeItemProperties>().isPitfall = true;
     }
 
-    public void ChangeMaterialOfCube(int x)
-    {
-        
-        Debug.Log(x / 10 +"   "+ x % 10 + "  "+ lst2D_GroundUnits[0].Count);
-      //  lst2D_GroundUnits[x/10][x%10].GetComponent<MeshRenderer>().material = mat_cubeBoarderNew;
-    }
 }

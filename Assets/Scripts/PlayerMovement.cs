@@ -17,6 +17,7 @@ public class PlayerMovement : MonoBehaviour
     private void Start()
     {
         pathGeneratorScript = GameObject.FindObjectOfType<PathGenerator>().GetComponent<PathGenerator>();
+        
     }
     public IEnumerator StartExecution(float timeDelay)
     {
@@ -35,50 +36,72 @@ public class PlayerMovement : MonoBehaviour
 
     public IEnumerator StartExecution(int diceValue)
     {
+        
+        List<List<GameObject>> lst2D_GroundUnits = FindObjectOfType<PathGenerator>().GetComponent<PathGenerator>().lst2D_GroundUnits;
 
-            for (int i = 0; i < diceValue; i++)
-            {
-                Vector3 playerPosition = transform.position;
-                RaycastHit hit;
+        for (int i = 0; i < diceValue; i++)
         {
-            //move player position as dice count and keep track of the board.
-                if (Physics.Raycast(playerPosition, Vector3.down, out hit))
-                {
-                    cubeItemProperties cip = hit.transform.GetComponent<cubeItemProperties>();
-                    if (!cip.isFinal)
-                    {
-                        yield return StartCoroutine(DoMotionOfPlayer(cip.cubeCurrentMotion));
-                    }
-                }
+            // get the player positin find corrosponding cube extract the data and then move according to the data.
+            Vector2Int initialPosition = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+            cubeItemProperties cip = lst2D_GroundUnits[initialPosition.y][initialPosition.x].transform.GetComponent<cubeItemProperties>();
+            if (cip.isFinal)
+            {
+                //this player has won the game
+                finalPanel.SetActive(true);
+                Text tmptext = finalPanel.transform.GetChild(0).GetComponent<Text>();
+                tmptext.text = gameObject.name + " has Won The match!!!";
             }
-            RaycastHit hit2;
-             //if (Physics.Raycast(transform.position, Vector3.down, out hit2))
-            //{
-            //    cubeItemProperties cip = hit2.transform.GetComponent<cubeItemProperties>();
-            //    if (cip.isShortcut)
-            //    {
-            //        for (int i = 0; i < cip.factor; i++)
-            //        {
-            //            yield return StartCoroutine(DoMotionOfPlayer(MotionType.fwd));
-            //        }
-            //    }
-            //    else if (cip.isPitfall)
-            //    {
-            //        for (int i = 0; i < cip.factor; i++)
-            //        {
-            //            yield return StartCoroutine(DoMotionOfPlayer(MotionType.back));
-            //        }
-            //    }
-            //    else if (cip.isFinal)
-            //    {
-            //        //this player has won the game
-            //        finalPanel.SetActive(true);
-            //        Text tmptext = finalPanel.transform.GetChild(0).GetComponent<Text>();
-            //        tmptext.text = gameObject.name + " has Won The match!!!"; 
-            //    }
-            //}
+            else
+            {
+                yield return StartCoroutine(DoMotionOfPlayer(cip.cubeCurrentMotion));
+            }
+        }
+
+
+        Vector2Int initialPosition2 = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+        cubeItemProperties cip2 = lst2D_GroundUnits[initialPosition2.y][initialPosition2.x].transform.GetComponent<cubeItemProperties>();
+        if(cip2.isPitfall || cip2.isShortcut){
+            yield return StartCoroutine(MovePlayerPosition(cip2.exitPoint));
         }
         Dice.isDiceRolling = false;
+    }
+
+
+    public IEnumerator MovePlayerPosition(Vector2Int endPoint)
+    {
+        Vector2Int initialPosition = new Vector2Int((int)transform.position.x, (int)transform.position.z);
+
+        while (endPoint.y != initialPosition.y)
+        {
+            if(Mathf.Abs(endPoint.y - (initialPosition.y+1) ) < Mathf.Abs( endPoint.y - initialPosition.y))
+            {
+               yield return StartCoroutine(DoMotionOfPlayer(MotionType.fwd));
+                // should move up 
+                initialPosition.y++;
+            }
+            else
+            {
+                yield return StartCoroutine(DoMotionOfPlayer(MotionType.back));
+                // move down.
+                initialPosition.y--;
+            }
+        }
+
+        while (endPoint.x != initialPosition.x)
+        {
+            if (Mathf.Abs(endPoint.x - (initialPosition.x + 1)) < Mathf.Abs(endPoint.x - initialPosition.x))
+            {
+                yield return StartCoroutine(DoMotionOfPlayer(MotionType.right));
+                // should move up 
+                initialPosition.x++;
+            }
+            else
+            {
+                yield return StartCoroutine(DoMotionOfPlayer(MotionType.left));
+                // move down.
+                initialPosition.x--;
+            }
+        }
     }
 
 
