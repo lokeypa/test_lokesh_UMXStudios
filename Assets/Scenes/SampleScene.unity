@@ -645,8 +645,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mat_cubeBoarder: {fileID: 2100000, guid: a64b81c4cbc5e214ea8eaa600ad86525, type: 2}
-  mat_cubeBoarderBlue: {fileID: 2100000, guid: 1fbb5ff7b63b06c4c81e578baafa0d6d, type: 2}
-  mat_cubeBoarderRed: {fileID: 2100000, guid: ebc162dff4628364da1a2dc8d8e8e138, type: 2}
+  mat_cubeBoarderBlueEntry: {fileID: 2100000, guid: 1fbb5ff7b63b06c4c81e578baafa0d6d,
+    type: 2}
+  mat_cubeBoarderRedEntry: {fileID: 2100000, guid: ebc162dff4628364da1a2dc8d8e8e138,
+    type: 2}
+  mat_cubeBoarderBlueExit: {fileID: 2100000, guid: 8623650109a237f4d9ee221cd1fe2035,
+    type: 2}
+  mat_cubeBoarderRedExit: {fileID: 2100000, guid: 0ec18670344cad940ab637562ae21fcf,
+    type: 2}
 --- !u!4 &251001741
 Transform:
   m_ObjectHideFlags: 0
@@ -1351,7 +1357,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &736574605
 MonoBehaviour:
   m_ObjectHideFlags: 0
